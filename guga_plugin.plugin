@@ -1,7 +1,6 @@
 [Script]
 # GUGA会员修改脚本
-http-response ^https?:\/\/www\.guga\.co\/api-base\/v2\/state$ script-path=https://raw.githubusercontent.com/Suwuuu/loon-plugins/main/guga_member_modify.js
-
+guga_member_modify = type=http-response,pattern=^https?://www.guga.co/api-base/v2/state$,script-path=https://www.google.com/search?q=https://raw.githubusercontent.com/Suwuuu/loon-plugins/main/guga_member_modify.js,requires-body%3Dtrue
 [Mitm]
 hostname = www.guga.co
 
