@@ -2,7 +2,7 @@
 # 在请求发送前移除 Accept-Encoding（确保优先）
 http-request ^https?://www.guga.co/api-base/v2/state$ script-path=https://raw.githubusercontent.com/Suwuuu/loon-plugins/refs/heads/main/guga_request_fix.js
 # 你的原响应脚本（保持）
-http-response ^https?://www.guga.co/api-base/v2/state$ script-path=https://raw.githubusercontent.com/Suwuuu/loon-plugins/refs/heads/main/guga_pro, requires-body=true
+http-response ^https?://www.guga.co/api-base/v2/state$ script-path=https://raw.githubusercontent.com/Suwuuu/loon-plugins/refs/heads/main/guga_pro.js, requires-body=true
 
 [Mitm]
 hostname = www.guga.co
