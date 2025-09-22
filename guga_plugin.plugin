@@ -1,6 +1,6 @@
 [Script]
 # GUGA会员修改脚本
-guga-member-modify = type=http-response,pattern=^https?://www\.guga\.co/api-base/v2/state,script-path=https://raw.githubusercontent.com/你的用户名/guga-scripts/main/guga_member_modify.js,requires-body=1,max-size=0,timeout=60
+http-response ^https:\/\/www\.guga\.co\/api-base\/v2\/state$ script-path=guga_membership_script.js,requires-body=true,tag=古咖会员
 
 [Mitm]
 hostname = www.guga.co
