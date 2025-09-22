@@ -1,7 +1,9 @@
-[MITM]
-hostname = m.ximalaya.com
-
 [Script]
 # VIP 修改脚本
 http-response ^https:\/\/m\.ximalaya\.com\/vip\/check\/user\/\d+$ script-path=https://raw.githubusercontent.com/Suwuuu/loon-plugins/refs/heads/main/xmly_vip.js
+
+
+[MITM]
+hostname = m.ximalaya.com
+
 
