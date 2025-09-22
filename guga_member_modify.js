@@ -29,16 +29,35 @@
 //         $done({});
 //     }
 // })();
+// guga_check_body.js
 (function() {
-'use strict';
-// 检查响应体是否存在
-if ($response && $response.body && $response.body.length > 0) {
-console.log('🎉🎉🎉 成功获取到响应体！');
-// 可选：打印响应体内容以便确认
-// console.log($response.body);
-} else {
-console.log('❌ 仍然没有获取到响应体。');
-}
-// 不做任何修改，直接返回
-$done({});
+  'use strict';
+  // 基本安全检查
+  if (typeof $response === 'undefined') {
+    console.log('❌ $response 未定义（脚本可能未被加载）');
+    $done({});
+    return;
+  }
+  console.log('📥 收到响应，status:', $response.status || 'unknown');
+  // 尝试打印部分 body（如果过大，可注释）
+  if ($response.body) {
+    console.log('body 长度:', $response.body.length);
+    try {
+      let body = JSON.parse($response.body);
+      console.log('解析后 code=', body.code, ' level=', body.data && body.data.level);
+      if (body && body.code === 200 && body.data) {
+        body.data.level = 1;
+        body.data.trialDate = body.data.trialDate || Math.floor(Date.now() / 1000);
+        console.log('✅ 已修改 level ->', body.data.level);
+        $done({ body: JSON.stringify(body) });
+        return;
+      }
+    } catch (e) {
+      console.log('⚠️ JSON 解析失败：', e.message);
+    }
+  } else {
+    console.log('⚠️ $response.body 为空或未提供');
+  }
+  // 未修改则原样放行（或根据需要返回原body）
+  $done({});
 })();
