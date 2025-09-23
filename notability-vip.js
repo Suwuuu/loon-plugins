@@ -1,41 +1,27 @@
-// Notability VIP修改插件 - 增强完整版
+// Notability VIP全面修改插件
 (function() {
     'use strict';
     
-    console.log("[Notability VIP] 脚本开始执行");
+    console.log("[Notability VIP] 全面修改脚本开始");
+    console.log("请求URL: " + $request.url);
+    console.log("请求体包含associateAppStoreTransactions: " + $request.body.includes("associateAppStoreTransactions"));
     
-    // 检查是否是目标请求
-    if ($request.body && !$request.body.includes("associateAppStoreTransactions")) {
-        console.log("[Notability VIP] 不是目标请求，跳过处理");
-        $done({});
-        return;
-    }
-    
-    if ($response.status !== 200 || !$response.body) {
-        console.log("[Notability VIP] 响应无效，跳过处理");
-        $done({});
-        return;
-    }
+    const targetTier = "plus"; // 可选: "plus", "pro", "lite"
     
     try {
         let body = JSON.parse($response.body);
+        let modified = false;
         
-        // 配置VIP类型
-        const targetTier = "plus"; // 可选: "plus", "lite", "pro"
+        console.log("原始响应: " + JSON.stringify(body));
         
-        // 修改VIP信息
+        // 方法1: 修改 associateAppStoreTransactions
         if (body.data && body.data.associateAppStoreTransactions) {
-            const vipData = body.data.associateAppStoreTransactions;
-            const originalTier = vipData.tier;
+            const original = body.data.associateAppStoreTransactions.tier;
+            body.data.associateAppStoreTransactions.tier = targetTier;
             
-            console.log(`[Notability VIP] 原始等级: ${originalTier}`);
-            
-            // 修改主等级
-            vipData.tier = targetTier;
-            
-            // 修改当前订阅信息
-            if (vipData.current === null) {
-                vipData.current = {
+            // 完善订阅信息
+            if (body.data.associateAppStoreTransactions.current === null) {
+                body.data.associateAppStoreTransactions.current = {
                     "__typename": "Subscription",
                     "tier": targetTier,
                     "status": "active",
@@ -43,33 +29,68 @@
                     "isTrial": false,
                     "isCancelled": false
                 };
-            } else if (vipData.current.tier) {
-                vipData.current.tier = targetTier;
-                vipData.current.status = "active";
             }
-            
-            // 修改历史订阅信息
-            if (vipData.prior === null) {
-                vipData.prior = {
+            console.log(`修改associateAppStoreTransactions: ${original} → ${targetTier}`);
+            modified = true;
+        }
+        
+        // 方法2: 修改 processAppleReceipt（第一个请求）
+        if (body.data && body.data.processAppleReceipt) {
+            if (body.data.processAppleReceipt.subscription === null) {
+                body.data.processAppleReceipt.subscription = {
                     "__typename": "Subscription",
-                    "tier": "starter",
-                    "status": "expired",
-                    "expiresDate": new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+                    "tier": targetTier,
+                    "status": "active"
                 };
+                console.log("添加processAppleReceipt订阅信息");
+                modified = true;
             }
+        }
+        
+        // 方法3: 修改用户信息相关字段
+        if (body.data && body.data.me) {
+            if (body.data.me.subscription) {
+                body.data.me.subscription.tier = targetTier;
+                body.data.me.subscription.status = "active";
+                console.log("修改用户信息订阅等级");
+                modified = true;
+            }
+        }
+        
+        // 方法4: 直接添加顶级VIP字段
+        if (!body.tier && !body.subscription) {
+            body.subscription = {
+                "tier": targetTier,
+                "status": "active",
+                "isActive": true,
+                "expiresDate": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+            };
+            console.log("添加顶级订阅字段");
+            modified = true;
+        }
+        
+        if (modified) {
+            const newBody = JSON.stringify(body);
+            console.log("修改后的响应: " + newBody);
+            console.log("✅ VIP修改完成");
+            $done({body: newBody});
+        } else {
+            console.log("⚠️ 未找到可修改的VIP字段，但尝试添加");
             
-            console.log(`[Notability VIP] 修改成功: ${originalTier} → ${targetTier}`);
+            // 强制添加VIP信息
+            body.vipInfo = {
+                "tier": targetTier,
+                "status": "active",
+                "level": "premium"
+            };
             
             const newBody = JSON.stringify(body);
+            console.log("强制添加VIP信息后的响应: " + newBody);
             $done({body: newBody});
-            
-        } else {
-            console.log("[Notability VIP] 不是目标响应格式");
-            $done({});
         }
         
     } catch (error) {
-        console.log("[Notability VIP] 错误: " + error);
+        console.log("❌ 处理错误: " + error);
         $done({});
     }
 })();
