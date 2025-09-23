@@ -1,13 +1,13 @@
 [Plugin]
 name = Notability VIP Modifier
 desc = 修改Notability VIP信息为Plus或Lite版本
-author = YourName
+author = Su
 version = 1.0.0
 enabled = true
 
 [Script]
 # Notability VIP修改脚本
-http-response ^https?://notability\.com/global script-path=https://raw.githubusercontent.com/YourName/YourRepo/main/notability-vip.js, requires-body=true, timeout=10
+http-response ^https?://notability\.com/global script-path=https://raw.githubusercontent.com/Suwuuu/loon-plugins/refs/heads/main/notability-vip.js, requires-body=true, timeout=10
 
 # 备用域名（如果有的话）
 # http-response ^https?://api\.notability\.com/global script-path=https://raw.githubusercontent.com/YourName/YourRepo/main/notability-vip.js, requires-body=true, timeout=10
