@@ -1,0 +1,5 @@
+[Script]
+http-response ^https:\/\/rec\.xiaohongshu\.com\/api\/sns\/v6\/homefeed requires-body=1,max-size=0,script-path=xhs_filter.js,tag=小红书去短视频
+
+[MITM]
+hostname = rec.xiaohongshu.com
