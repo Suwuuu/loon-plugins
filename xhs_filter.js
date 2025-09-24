@@ -9,11 +9,11 @@ try {
 
   if (obj && obj.data && Array.isArray(obj.data)) {
     // 过滤，只保留图文 note
-    console.log(obj.data.length())
+    console.log(obj.data.length)
     obj.data = obj.data.filter(item => {
       return item.model_type !== "video" ;
     });
-    console.log(obj.data.length())
+    console.log(obj.data.length)
   }
 
   body = JSON.stringify(obj);
