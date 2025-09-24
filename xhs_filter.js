@@ -11,7 +11,7 @@ try {
     // 过滤，只保留图文 note
     console.log(obj.data.length)
     obj.data = obj.data.filter(item => {
-      return item.model_type !== "video" ;
+      return item.type !== "video" ;
     });
     console.log(obj.data.length)
   }
