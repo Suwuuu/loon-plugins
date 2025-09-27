@@ -11,7 +11,7 @@ try {
     // 过滤，只保留图文 note
     console.log(obj.data.items[0])
     console.log(obj.data.items.length)
-    obj.data.items = obj.data.items.filter(item => !item.hasOwnProperty('rcmd_reason_style'))
+    obj.data.items = obj.data.items.filter(item => !item.hasOwnProperty('rcmd_reason'))
     console.log(obj.data.items.length)
     console.log("1111111")
   }
