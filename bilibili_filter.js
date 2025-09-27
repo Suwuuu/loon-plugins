@@ -7,7 +7,7 @@ let body = $response.body;
 try {
   let obj = JSON.parse(body);
 
-  if (obj && obj.data && Array.isArray(obj.data)) {
+  if (obj && obj.data && Array.isArray(obj.data.items)) {
     // 过滤，只保留图文 note
     console.log(obj.data.items[0])
     console.log(obj.data.items.length)
