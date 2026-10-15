@@ -1,0 +1,15 @@
+#!name = X 视频固定最高画质
+#!desc = 让 X (Twitter) 视频固定走最高码率分支，不再被自适应码率降到低画质。做法：改写 video.twimg.com 的 HLS 主播放列表，只保留码率最高的 #EXT-X-STREAM-INF 分支。代价是弱网时只会缓冲、不会自动降级。需在 Loon 中开启 MITM 并信任证书；若播放列表结构变化，脚本会在脚本日志中报错并原样放行，不会静默降级。
+#!homepage = https://github.com/Suwuuu/loon-plugins
+#!icon = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/X.png
+#!system = iOS,iPadOS,macOS,tvOS
+#!loon_version = 3.0.0
+#!date = 2026-10-15
+#!tag = 视频
+
+[Script]
+# 只有 /pl/*.m3u8 是含多码率分支的主播放列表；/pu/pl/*.m3u8 是分片级播放列表，脚本内部会跳过
+http-response ^https?:\/\/video\.twimg\.com\/[^?]*\/pl\/[^\/?]+\.m3u8(\?.*)?$ script-path=https://raw.githubusercontent.com/Suwuuu/loon-plugins/refs/heads/main/x-video-best-quality.js, requires-body=true, timeout=10, tag=XVideoHQ
+
+[MITM]
+hostname = video.twimg.com
